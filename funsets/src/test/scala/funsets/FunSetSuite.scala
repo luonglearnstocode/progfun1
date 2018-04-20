@@ -86,7 +86,7 @@ class FunSetSuite extends FunSuite {
    * Once you finish your implementation of "singletonSet", exchange the
    * function "ignore" by "test".
    */
-  test("singletonSet(1) contains 1") {
+  test("singletonSet(1) contains 1 not 2") {
 
     /**
      * We create a new instance of the "TestSets" trait, this gives us access
@@ -98,6 +98,7 @@ class FunSetSuite extends FunSuite {
        * the test fails. This helps identifying which assertion failed.
        */
       assert(contains(s1, 1), "Singleton")
+      assert(!contains(s1, 2), "Singleton")
     }
   }
 
