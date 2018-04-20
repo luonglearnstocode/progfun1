@@ -22,7 +22,21 @@ object Main {
   /**
    * Exercise 2
    */
-    def balance(chars: List[Char]): Boolean = ???
+
+    def balance(chars: List[Char]): Boolean = {
+      def balanceHelper(parens: List[Char], chars: List[Char]): Boolean = {
+        chars match {
+          case '(' :: tail => balanceHelper('(' :: parens, tail)
+          case ')' :: _ if parens.isEmpty => false
+          case ')' :: _ if parens.head != '(' => false
+          case ')' :: tail => balanceHelper(parens.tail, tail)
+          case Nil => parens.isEmpty
+          case _ :: tail => balanceHelper(parens, tail)
+        }
+      }
+
+      balanceHelper(List(), chars)
+    }
   
   /**
    * Exercise 3
