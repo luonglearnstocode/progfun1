@@ -22,7 +22,6 @@ object Main {
   /**
    * Exercise 2
    */
-
     def balance(chars: List[Char]): Boolean = {
       def balanceHelper(parens: List[Char], chars: List[Char]): Boolean = {
         chars match {
@@ -41,5 +40,10 @@ object Main {
   /**
    * Exercise 3
    */
-    def countChange(money: Int, coins: List[Int]): Int = ???
+    def countChange(money: Int, coins: List[Int]): Int = {
+      if (money == 0) 1
+      else if (coins.isEmpty) 0
+      else if (coins.min > money) 0
+      else coins.map(i => if (i <= money) countChange(money - i, coins.filter(_ >= i)) else 0).sum
+    }
   }
