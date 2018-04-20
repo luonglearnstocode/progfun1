@@ -19,7 +19,7 @@ object FunSets {
   /**
    * Returns the set of the one given element.
    */
-    def singletonSet(elem: Int): Set = Set(elem)
+    def singletonSet(elem: Int): Set = _ == elem
   
 
   /**
@@ -56,23 +56,23 @@ object FunSets {
    */
     def forall(s: Set, p: Int => Boolean): Boolean = {
       def iter(a: Int): Boolean = {
-        if (???) ???
-        else if (???) ???
-        else iter(???)
+        if (a > 1000) true
+        else if (contains(s, a) && !p(a)) false
+        else iter(a+1)
       }
-      iter(???)
+      iter(-1000)
     }
   
   /**
    * Returns whether there exists a bounded integer within `s`
    * that satisfies `p`.
    */
-    def exists(s: Set, p: Int => Boolean): Boolean = ???
+    def exists(s: Set, p: Int => Boolean): Boolean = !forall(s, !p(_))
   
   /**
    * Returns a set transformed by applying `f` to each element of `s`.
    */
-    def map(s: Set, f: Int => Int): Set = ???
+    def map(s: Set, f: Int => Int): Set = e => exists(s, f(_) == e)
   
   /**
    * Displays the contents of a set

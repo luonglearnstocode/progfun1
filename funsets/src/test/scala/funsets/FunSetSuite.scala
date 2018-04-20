@@ -111,5 +111,50 @@ class FunSetSuite extends FunSuite {
     }
   }
 
+  test("test forall") {
+    new TestSets {
+      var s = union(s1, s3)
+//      s = union(s, s3)
+      assert(forall(s, _ % 2 == 1), "all odd numbers")
+    }
+  }
+
+  test("test forall 2") {
+    new TestSets {
+      var s = union(s1, s2)
+      s = union(s, s3)
+      assert(!forall(s, _ % 2 == 1), "not all odd numbers")
+    }
+  }
+
+  test("test not exists") {
+    new TestSets {
+      var s = union(s1, s3)
+      assert(!exists(s, _ % 2 == 0), "not exists an even numbers")
+    }
+  }
+
+
+  test("test exists") {
+    new TestSets {
+      var s = union(s1, s2)
+      s = union(s, s3)
+      assert(exists(s, _ % 2 == 0), "exists an even numbers")
+    }
+  }
+
+  test("test map") {
+    new TestSets {
+      var s = union(s1, s2)
+      s = union(s, s3)
+      val newS = map(s, _*5)
+
+      assert(contains(newS, 5), "map 1 to 5")
+      assert(contains(newS, 10), "map 2 to 10")
+      assert(contains(newS, 15), "map 3 to 15")
+      assert(!contains(newS, 1), "not contain old value")
+    }
+  }
+
 
 }
