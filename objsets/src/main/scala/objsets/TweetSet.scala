@@ -2,6 +2,8 @@ package objsets
 
 import TweetReader._
 
+import scala.annotation.tailrec
+
 /**
  * A class to represent tweets.
  */
@@ -65,7 +67,7 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-    def mostRetweeted: Tweet = ???
+    def mostRetweeted: Tweet
   
   /**
    * Returns a list containing all tweets of this set, sorted by retweet count
@@ -76,7 +78,7 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-    def descendingByRetweet: TweetList = ???
+    def descendingByRetweet: TweetList
   
   /**
    * The following methods are already implemented
@@ -110,6 +112,10 @@ class Empty extends TweetSet {
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = acc
 
   def union(that: TweetSet): TweetSet = that
+
+  def mostRetweeted: Tweet = throw new NoSuchElementException
+
+  def descendingByRetweet: TweetList = Nil
   
   /**
    * The following methods are already implemented
@@ -130,9 +136,28 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     right.filterAcc(p, left.filterAcc(p, if (p(elem)) acc.incl(elem) else acc))
   }
 
-  def union(that: TweetSet): TweetSet = ((left union right) union that) incl elem
-  
-    
+  def union(that: TweetSet): TweetSet = filterAcc(_ => true, that)
+
+  def mostRetweeted: Tweet = {
+    (left, right) match {
+      case (l: Empty, r: Empty) => elem
+      case (l: Empty, r: NonEmpty) => if (elem.retweets > r.mostRetweeted.retweets) elem else r.mostRetweeted
+      case (l: NonEmpty, r: Empty) => if (elem.retweets > l.mostRetweeted.retweets) elem else l.mostRetweeted
+      case (l: NonEmpty, r: NonEmpty) => {
+        val mostLeft = l.mostRetweeted; val mostRight = r.mostRetweeted
+        if (elem.retweets > mostLeft.retweets && elem.retweets > mostRight.retweets) elem
+        else if (mostLeft.retweets > elem.retweets && mostLeft.retweets > mostRight.retweets) mostLeft
+        else mostRight
+      }
+    }
+  }
+
+  def descendingByRetweet: TweetList = {
+      var most = mostRetweeted
+      new Cons(most, this.remove(most).descendingByRetweet)
+    }
+
+
   /**
    * The following methods are already implemented
    */
@@ -154,6 +179,7 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     else left.union(right)
 
   def foreach(f: Tweet => Unit): Unit = {
+    println("calling foreach")
     f(elem)
     left.foreach(f)
     right.foreach(f)
@@ -186,7 +212,7 @@ object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
-    lazy val googleTweets: TweetSet = ???
+  lazy val googleTweets: TweetSet = ???
   lazy val appleTweets: TweetSet = ???
   
   /**
@@ -198,5 +224,9 @@ object GoogleVsApple {
 
 object Main extends App {
   // Print the trending tweets
-  GoogleVsApple.trending foreach println
+//  GoogleVsApple.trending foreach println
+  var i = 0
+  allTweets.foreach(println)
+  println(i)
 }
+
