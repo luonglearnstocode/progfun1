@@ -53,6 +53,11 @@ class HuffmanSuite extends FunSuite {
     assert(combine(leaflist) === List(Fork(Leaf('e',1),Leaf('t',2),List('e', 't'),3), Leaf('x',4)))
   }
 
+  test("combine of 2 leaf list") {
+    val leaflist = List(Leaf('e', 1), Leaf('t', 2))
+    assert(combine(leaflist) === List(Fork(Leaf('e',1),Leaf('t',2),List('e', 't'),3)))
+  }
+
   test("decode") {
     println(decodedSecret)
   }
@@ -66,6 +71,23 @@ class HuffmanSuite extends FunSuite {
     new TestTrees {
       assert(decode(t1, encode(t1)("ab".toList)) === "ab".toList)
     }
+  }
+
+  test("codeBits") {
+    val table = ('a', List(1, 2, 3)) :: ('b', List(4,5,6)) :: Nil
+    println(codeBits(table)('a'))
+    println(codeBits(table)('b'))
+    assert(codeBits(table)('a').equals(List(1, 2, 3)))
+  }
+
+  test("mergeCodeTables") {
+    val tableA = ('a', List(1, 2, 3)) :: ('b', List(4,5,6)) :: Nil
+    val tableB = ('c', List()) :: ('d', List()) :: Nil
+    println(mergeCodeTables(tableA, tableB))
+  }
+
+  test("quickEncode") {
+    println(quickEncode(frenchCode)(string2Chars("abcdef")))
   }
 
 }
