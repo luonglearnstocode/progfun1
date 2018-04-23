@@ -57,6 +57,10 @@ class HuffmanSuite extends FunSuite {
     println(decodedSecret)
   }
 
+  test("encode") {
+    println(encode(frenchCode)(string2Chars("abcdef")))
+  }
+
 
   test("decode and encode a very short text should be identity") {
     new TestTrees {
