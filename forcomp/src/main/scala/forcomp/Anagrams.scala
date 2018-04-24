@@ -81,7 +81,25 @@ object Anagrams {
    *  Note that the order of the occurrence list subsets does not matter -- the subsets
    *  in the example above could have been displayed in some other order.
    */
-  def combinations(occurrences: Occurrences): List[Occurrences] = ???
+  def combinations(occurrences: Occurrences): List[Occurrences] =
+    if (occurrences.isEmpty) List(List())
+    else {
+      for {
+        split <- 1 to occurrences.size
+        current <- helper(occurrences(split-1))
+        rest <- combinations(occurrences drop split)
+      } yield current ::: rest
+    }.toList
+
+  /**
+    * ('a', 2) returns
+    *     List(
+    *       List(),
+    *       List(('a', 2)),
+    *       List(('a', 1))
+    *     )
+    */
+  def helper(p: (Char, Int)): List[Occurrences] = List() :: (for {j <- 1 to p._2} yield List((p._1, j))).toList
 
   /** Subtracts occurrence list `y` from occurrence list `x`.
    *
