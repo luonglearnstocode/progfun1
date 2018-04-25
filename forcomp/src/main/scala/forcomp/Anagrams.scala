@@ -111,7 +111,13 @@ object Anagrams {
    *  Note: the resulting value is an occurrence - meaning it is sorted
    *  and has no zero-entries.
    */
-  def subtract(x: Occurrences, y: Occurrences): Occurrences = ???
+  def subtract(x: Occurrences, y: Occurrences): Occurrences = y.foldLeft(x)(
+    (acc, e) => if (acc.contains(e)) acc diff List(e) else subtractHelper(acc, e))
+
+  def subtractHelper(x: Occurrences, y: (Char, Int)): Occurrences = {
+    val map = x.toMap
+    map.updated(y._1, map(y._1) - y._2).toList.sorted
+  }
 
   /** Returns a list of all anagram sentences of the given sentence.
    *
@@ -153,5 +159,20 @@ object Anagrams {
    *
    *  Note: There is only one anagram of an empty sentence.
    */
-  def sentenceAnagrams(sentence: Sentence): List[Sentence] = ???
+  def sentenceAnagrams(sentence: Sentence): List[Sentence] = if (sentence.isEmpty) List(List()) else {
+    val occurrences = sentenceOccurrences(sentence)
+
+    def anagramsHelper(x: Occurrences): List[Sentence] = if (x.isEmpty) List(List()) else {
+      val comb = combinations(x)
+      for {
+        subset <- comb if dictionaryByOccurrences.contains(subset)// list of Occurrences of valid word
+        word <- dictionaryByOccurrences(subset)  // list of Word
+        rest <- anagramsHelper(subtract(x, subset)) // list of sentences
+      } yield word :: rest
+    }
+
+    anagramsHelper(occurrences)
+
+  }
+
 }
